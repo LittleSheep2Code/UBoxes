@@ -6,9 +6,10 @@
 
 <script>
 import BasicLayoutComponents from "../layouts/BasicLayoutComponents"
+
 export default {
   name: "PluginsRenderer",
-  components: { BasicLayoutComponents },
+  components: {BasicLayoutComponents},
   data: () => ({
     rendererOptions: {
       pluginHTML: ""
@@ -17,14 +18,21 @@ export default {
 
   mounted() {
     this.$store.state.availablePlugins.forEach(plugin => {
-      if(plugin.plugin_attributes["package-name"] === this.$route.query["package"]) {
+      if (plugin.plugin_attributes["package-name"] === this.$route.query["package"]) {
         this.rendererOptions.pluginHTML = plugin.renderer_attributes["indexHTML"]
+
+        this.$nextTick(() => {
+          let scripts = document.createElement("script")
+          plugin.renderer_attributes["indexHTML"].replace(/<script.*?>([\s\S]+?)<\/script>/img, (_, source) => {
+            scripts.innerHTML = source
+          });
+        })
       }
     })
   }
 }
 </script>
 
-<style scoped>
+<style>
 
 </style>
