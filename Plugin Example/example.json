@@ -1,0 +1,8 @@
+{
+    "index": "example/index.html",
+    "package-name": "Example",
+
+    "route-name": "example",
+    "route-title": "Example",
+    "route-icon": "mdi-folder-information"
+}
