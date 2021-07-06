@@ -5,10 +5,18 @@ const routes = [
   },
 
   {
-    path: "/main",
-    component: () => import("layouts/BasicLayout.vue"),
+    path: "/settings",
+    component: () => import("layouts/BasicLayout"),
     children: [
-      { path: "", component: () => import("pages/Index.vue") }
+      { path: "", component: () => import("pages/Settings") }
+    ]
+  },
+
+  {
+    path: "/main",
+    component: () => import("layouts/BasicLayout"),
+    children: [
+      { path: "", component: () => import("pages/Index") }
     ]
   },
 

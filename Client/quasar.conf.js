@@ -35,7 +35,8 @@ module.exports = function () {
       importStrategy: "auto",
 
       plugins: [
-        "Cookies"
+        "Cookies",
+        "Dialog"
       ]
     },
 

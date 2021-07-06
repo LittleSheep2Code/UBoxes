@@ -1,10 +1,12 @@
-import {existsSync, readdir, stat, statSync, readFileSync} from "fs"
-import {mkdirsSync, readJsonSync} from "fs-extra"
+import {existsSync, readdir, readFileSync, stat, statSync} from "fs"
+import {mkdirsSync, readJsonSync, removeSync} from "fs-extra"
+import AdmZip from "adm-zip"
 
 import path from "path"
-import electron, {remote, app} from "electron"
+import electron, {remote} from "electron"
 
 import Plugin from "../interfaces/plugin-instance"
+import PluginManifest from "../interfaces/plugin-manifest-instance";
 
 export default class Plugins_Loader {
   static plugins_instance_folder
@@ -12,6 +14,11 @@ export default class Plugins_Loader {
   static plugins_manifests = {}
   static plugins = []
 
+  /**
+   * Load every plugins from "${appData}/UBoxes/plugins/instances" folder
+   *
+   * @returns {Promise<>}
+   */
   static load_plugins() {
     return new Promise(resolve => {
       // Clean the data first
@@ -49,8 +56,8 @@ export default class Plugins_Loader {
 
               let file_name = path.basename(file_uri)
               let plugin_name = file_name.substr(0, file_name.length - 14)
-              Plugins_Loader.plugins_manifests[plugin_name] = readJsonSync(file_path)
 
+              Plugins_Loader.plugins_manifests[plugin_name] = new PluginManifest(readJsonSync(file_path), file_path)
               Plugins_Loader.register_plugin(Plugins_Loader.plugins_manifests[plugin_name])
             }
           })
@@ -59,13 +66,18 @@ export default class Plugins_Loader {
     })
   }
 
+  /**
+   * Register plugin to memory
+   *
+   * @param plugin_manifest Need register plugin manifest instance(Not content)
+   */
   static register_plugin(plugin_manifest) {
     let plugin_instance = new Plugin(plugin_manifest)
 
     // Check package name is duplicate
     let can_registered;
     Plugins_Loader.plugins.forEach(plugin => {
-      if(plugin.plugin_attributes["package-name"] === plugin_instance.plugin_attributes["package-name"]) {
+      if (plugin.plugin_attributes["package-name"] === plugin_instance.plugin_attributes["package-name"]) {
         console.log("[PLUGINS] Failed register plugin: " + plugin_instance.plugin_attributes.index)
         remote.dialog.showErrorBox(
           "Failed to register plugins",
@@ -111,5 +123,47 @@ export default class Plugins_Loader {
     // Push plugins
     Plugins_Loader.plugins.push(plugin_instance)
     console.log("[PLUGINS] Success register plugin: " + plugin_instance.plugin_attributes.index)
+  }
+
+  /**
+   * Uninstall plugin function
+   * This function need execute after loaded plugins
+   *
+   * @param plugin_instance Need uninstall plugin instance
+   */
+  static remove_plugin(plugin_instance) {
+    if (plugin_instance.file_list.manifest != null)
+      removeSync(plugin_instance.file_list.manifest)
+
+    if (plugin_instance.file_list.resource != null)
+      removeSync(plugin_instance.file_list.resource)
+  }
+
+  /**
+   * Install plugin file function
+   *
+   * @param plugin_file Need install plugin file, require ends with ".u-ext"
+   * @param overwrite Overwrite installed plugin file
+   * @returns {Promise<Boolean>}
+   */
+  static install_plugin(plugin_file, overwrite) {
+    return new Promise(resolve => {
+      // Promise the plugin folder is OK
+      Plugins_Loader.plugins_instance_folder = path.join((electron.app || electron.remote.app).getPath("appData"), "UBoxes/plugins/instances")
+
+      // Check file is OK
+      if(!existsSync(plugin_file) || !plugin_file.endsWith(".u-ext")) {
+        resolve(false)
+        return
+      }
+
+      // Get zip files
+      let zip_file = new AdmZip(plugin_file, {})
+      let zip_files = zip_file.getEntries();
+
+      // Write files to plugin folder
+      zip_file.extractAllTo(Plugins_Loader.plugins_instance_folder, overwrite, null);
+      resolve(true)
+    })
   }
 }

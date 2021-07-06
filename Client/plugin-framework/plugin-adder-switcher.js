@@ -1,5 +1,10 @@
 export default class PluginsLoaderSwitcher {
 
+  /**
+   * Judge runtime platform and return the available plugin loader
+   *
+   * @returns {Plugins_Loader}
+   */
   static automaticGetLoaderInstance() {
     const mobileAgentList = [
       /Android/i,

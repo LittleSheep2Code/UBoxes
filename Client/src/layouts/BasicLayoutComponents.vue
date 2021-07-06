@@ -18,7 +18,7 @@
       </q-list>
     </q-drawer>
 
-    <q-page-container>
+    <q-page-container class="full-height">
       <slot/>
     </q-page-container>
   </q-layout>
@@ -29,6 +29,13 @@ import {Cookies} from "quasar"
 import NavigationItems from "components/NavigationItems"
 
 let navigationItemsList = [
+  {
+    title: "Settings",
+    package_name: "Main(Bundle)",
+    icon: "settings",
+    route: "/settings"
+  },
+
   {
     title: "Main",
     package_name: "Main(Bundle)",
@@ -48,6 +55,12 @@ export default {
       packageShow: !Cookies.get("not-show-plugin-package")
     }
   }),
+
+  watch: {
+    "$store.state.settings": function() {
+      this.navigationData.packageShow = this.$store.state.settings.general.show_package
+    }
+  },
 
   computed: {
     navigationItems() {

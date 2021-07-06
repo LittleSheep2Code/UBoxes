@@ -17,8 +17,11 @@ export default class Plugin {
     "indexHTML": ""
   }
 
+  manifest
+
   constructor(plugin_manifest) {
-    this.plugin_attributes = plugin_manifest
+    this.plugin_attributes = plugin_manifest.content
+    this.manifest = plugin_manifest
   }
 
   check_plugin_attributes() {
