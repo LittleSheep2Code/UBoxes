@@ -1,7 +1,10 @@
 const routes = [
   {
     path: "/plugins",
-    component: () => import("components/PluginsRenderer")
+    component: () => import("layouts/BasicLayout"),
+    children: [
+      { path: "", component: () => import("components/PluginsRenderer") }
+    ]
   },
 
   {

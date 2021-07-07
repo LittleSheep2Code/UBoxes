@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import {Cookies} from "quasar"
+import {LocalStorage} from "quasar"
 import NavigationItems from "components/NavigationItems"
 
 let navigationItemsList = [
@@ -52,7 +52,7 @@ export default {
     navigationData: {
       isDrawerOpen: false,
 
-      packageShow: !Cookies.get("not-show-plugin-package")
+      packageShow: !LocalStorage.getItem("not-show-plugin-package")
     }
   }),
 

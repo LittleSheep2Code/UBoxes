@@ -39,3 +39,9 @@ export default {
   }
 }
 </script>
+
+<style>
+#q-app {
+  font-family: Roboto, sans-serif;
+}
+</style>

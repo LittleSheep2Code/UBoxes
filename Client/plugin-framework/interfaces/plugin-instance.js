@@ -1,11 +1,13 @@
 export default class Plugin {
 
-  static REQUIRE_KEYS = ["index", "package-name", "route-name", "route-title", "route-icon"]
+  static REQUIRE_KEYS = ["index", "resource", "package-name", "route-name", "route-title", "route-icon"]
 
   // Plugin settings attributes
   plugin_attributes = {
     "index": null,
+    "resource": null,
     "package-name": null,
+    "server-require": false,
 
     "route-name": null,
     "route-title": null,

@@ -1,5 +1,3 @@
-import {basename} from "path"
-
 export default class PluginManifest {
 
   content = {}
@@ -13,6 +11,6 @@ export default class PluginManifest {
     this.content = content
 
     this.file_list.manifest = where
-    this.file_list.resource = basename(content["index"])
+    this.file_list.resource = content["resource"]
   }
 }

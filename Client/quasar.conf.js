@@ -35,8 +35,10 @@ module.exports = function () {
       importStrategy: "auto",
 
       plugins: [
-        "Cookies",
-        "Dialog"
+        "LocalStorage",
+        "Dialog",
+        "Notify",
+        "LoadingBar"
       ]
     },
 

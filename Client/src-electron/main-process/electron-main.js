@@ -1,4 +1,4 @@
-import {app, BrowserWindow, nativeTheme, ipcMain} from "electron"
+import {app, BrowserWindow, nativeTheme, ipcMain, protocol} from "electron"
 import PluginLoader from "../../plugin-framework/electron-mode/plugin-adder"
 
 try {
@@ -10,7 +10,8 @@ try {
       require("path").join(app.getPath("userData"), "DevTools Extensions")
     )
   }
-} catch (_) {}
+} catch (_) {
+}
 
 if (process.env.PROD) {
   global.__statics = __dirname
@@ -25,7 +26,8 @@ function createWindow() {
     useContentSize: true,
     webPreferences: {
       nodeIntegration: process.env.QUASAR_NODE_INTEGRATION,
-      nodeIntegrationInWorker: process.env.QUASAR_NODE_INTEGRATION
+      nodeIntegrationInWorker: process.env.QUASAR_NODE_INTEGRATION,
+      webSecurity: false
     }
   })
 

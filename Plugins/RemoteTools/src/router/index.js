@@ -5,13 +5,13 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
-    component: () => ("../views/Index.vue")
+    path: "/",
+    component: () => import("../views/Index.vue")
   }
 ]
 
 const router = new VueRouter({
-  mode: 'history',
+  linkActiveClass: "active",
   base: process.env.BASE_URL,
   routes
 })
